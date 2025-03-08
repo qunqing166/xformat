@@ -8,8 +8,6 @@ namespace x
 
 using var = std::variant<bool, char, short, int, long, long long, float, double, std::string>;
 
-static std::vector<var> tmp;
-
 static bool IsNumLegal(const std::string& numStr)
 {
     for (int i = 0; i < numStr.length(); i++)
@@ -25,12 +23,9 @@ static bool IsNumLegal(const std::string& numStr)
  */
 static int GetFormatItemNum(const std::string& format, int& itemSize)
 {
-    // {...
-
     int pos = format.find('}');
     if(pos == std::string::npos)
     {
-        std::cout << "format str is error!\n";
         itemSize = format.length();
         return -1;
     }
@@ -39,13 +34,11 @@ static int GetFormatItemNum(const std::string& format, int& itemSize)
 
     if(braceStr[0] != '{' || braceStr[braceStr.length() - 1] != '}')
     {
-        std::cout << "截取占位符错误\n";
         return -1;
     }
 
     std::string numStr = braceStr.substr(1, braceStr.length() - 2);
 
-    std::cout << "substr: " << braceStr << "\n";
     itemSize = pos + 1;
 
     int num = 0;
@@ -56,7 +49,9 @@ static int GetFormatItemNum(const std::string& format, int& itemSize)
 }
 
 
-
+/**
+ * @brief 格式化字符串
+ */
 template <typename... Args>
 std::string Format(const std::string &str, Args...args)
 {
@@ -84,11 +79,9 @@ std::string Format(const std::string &str, Args...args)
         {
             int a;
             int num = GetFormatItemNum(format.substr(ll), a);
-            std::cout << "num is " << num << '\n';
             if(num >= vargs.size())
             {
                 num = vargs.size() - 1;
-                std::cout << "error: 序号大于参数列表长度\n";
             }
 
             std::string repStr;

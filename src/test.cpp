@@ -1,4 +1,4 @@
-#include "../include/XForamt.h"
+#include "../include/XFormat.h"
 #include <iostream>
 
 int main()
