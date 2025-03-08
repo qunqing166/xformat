@@ -3,16 +3,10 @@
 
 int main()
 {
-    // auto a = x::GetArgs(1, 2, 3, 4, 5);
-
-    // for(auto x : a)
-    // {
-    //     std::cout << std::get<int>(x) << "\n";
-    // }
-    std::string format = "url is {0}, this link is {5}, we should use '{' and '}' {{} to get the value of var";
-    auto str = x::Format(format, "a", "b", "c", "d");
+    std::string format = "0 is {0}, 1 is {1}, 2 is {2}, 3 is {3}";
+    auto str = x::Format(format, "a", true, 123, 3.33);
     std::cout << format << "\n";
     std::cout << str << "\n";
-    std::cout << "nmsl\n";
+
     return 0;
 }

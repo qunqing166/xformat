@@ -6,13 +6,9 @@
 namespace x
 {
 
-using var = std::variant<bool, int, std::string>;
+using var = std::variant<bool, char, short, int, long, long long, float, double, std::string>;
 
 static std::vector<var> tmp;
-
-// {a}
-// {{} {}}
-
 
 static bool IsNumLegal(const std::string& numStr)
 {
@@ -39,11 +35,6 @@ static int GetFormatItemNum(const std::string& format, int& itemSize)
         return -1;
     }
 
-    // if(pos + 1 < format.length() && format[pos + 1] == '}')
-    // {
-
-    // }
-
     std::string braceStr = format.substr(0, pos + 1);
 
     if(braceStr[0] != '{' || braceStr[braceStr.length() - 1] != '}')
@@ -69,7 +60,6 @@ static int GetFormatItemNum(const std::string& format, int& itemSize)
 template <typename... Args>
 std::string Format(const std::string &str, Args...args)
 {
-    // "url is {0}, this link is {1}, we should use '{' and '}' to get the value of var"
     std::vector<var> vargs = {(args)...};
     std::string res;
 
@@ -94,15 +84,51 @@ std::string Format(const std::string &str, Args...args)
         {
             int a;
             int num = GetFormatItemNum(format.substr(ll), a);
-            
+            std::cout << "num is " << num << '\n';
             if(num >= vargs.size())
             {
                 num = vargs.size() - 1;
                 std::cout << "error: 序号大于参数列表长度\n";
             }
 
-            format.replace(pos, a, std::get<std::string>(vargs[num]));
-            pos += std::get<std::string>(vargs[num]).length() - a;
+            std::string repStr;
+            var &arg = vargs[num];
+            switch (arg.index())
+            {
+            case 0: // bool
+                repStr = std::get<bool>(arg) ? "true" : "false";
+                break;
+            case 1: // char
+                repStr = std::get<char>(arg);
+                break;
+            case 2: // short
+                repStr = std::to_string(std::get<short>(arg));
+                break;
+            case 3: // int 
+                repStr = std::to_string(std::get<int>(arg));
+                break;
+            case 4: // long
+                repStr = std::to_string(std::get<long>(arg));
+                break;
+            case 5: // long long
+                repStr = std::to_string(std::get<long long>(arg));
+                break;
+            case 6: // float
+                repStr = std::to_string(std::get<float>(arg));
+                break;
+            case 7: // double
+                repStr = std::to_string(std::get<double>(arg));
+                break;
+            case 8: //std::string
+                repStr = std::get<std::string>(arg);
+                break;
+
+            default:
+                break;
+            }
+            
+            format.replace(pos, a, repStr);
+            pos += repStr.length() - a;
         }
     }
 
