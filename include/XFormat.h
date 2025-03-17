@@ -48,6 +48,45 @@ static int GetFormatItemNum(const std::string& format, int& itemSize)
     return num;
 }
 
+static std::string VarToString(const var& arg)
+{
+    std::string ret;
+    switch (arg.index())
+    {
+    case 0: // bool
+        ret = std::get<bool>(arg) ? "true" : "false";
+        break;
+    case 1: // char
+        ret = std::get<char>(arg);
+        break;
+    case 2: // short
+        ret = std::to_string(std::get<short>(arg));
+        break;
+    case 3: // int 
+        ret = std::to_string(std::get<int>(arg));
+        break;
+    case 4: // long
+        ret = std::to_string(std::get<long>(arg));
+        break;
+    case 5: // long long
+        ret = std::to_string(std::get<long long>(arg));
+        break;
+    case 6: // float
+        ret = std::to_string(std::get<float>(arg));
+        break;
+    case 7: // double
+        ret = std::to_string(std::get<double>(arg));
+        break;
+    case 8: //std::string
+        ret = std::get<std::string>(arg);
+        break;
+
+    default:
+        break;
+    }
+
+    return ret;
+}
 
 /**
  * @brief 格式化字符串
@@ -56,72 +95,42 @@ template <typename... Args>
 std::string Format(const std::string &str, Args...args)
 {
     std::vector<var> vargs = {(args)...};
-    std::string res;
 
-    int status = 0;
     int pos = 0;
 
     std::string format = str;
 
-    while(true)
+    for (int i = 0; i < format.length(); ++i)
     {
-        int ll = format.find('{', pos);
-        if(ll == std::string::npos)break;
-
-        pos = ll;
-
-        if(ll + 1 < format.length() && format[ll + 1] == '{')
+        if(format[i] == '{')
         {
-            format.erase(ll, 1);
-            pos += 1;
+            pos = i;
+            if(i + 1 < format.length() && format[i + 1] == '{')
+            {
+                format.erase(i, 1);
+                // pos += 1;
+            }
+            else
+            {
+                int a;
+                int num = GetFormatItemNum(format.substr(i), a);
+                if(num >= vargs.size())
+                {
+                    num = vargs.size() - 1;
+                }
+
+                std::string repStr = VarToString(vargs[num]);
+
+                format.replace(pos, a, repStr);
+                pos += repStr.length() - a + 1;
+            }
         }
-        else
+        else if(format[i] == '}')
         {
-            int a;
-            int num = GetFormatItemNum(format.substr(ll), a);
-            if(num >= vargs.size())
+            if(i + 1 < format.length() && format[i + 1] == '}')
             {
-                num = vargs.size() - 1;
+                format.erase(i, 1);
             }
-
-            std::string repStr;
-            var &arg = vargs[num];
-            switch (arg.index())
-            {
-            case 0: // bool
-                repStr = std::get<bool>(arg) ? "true" : "false";
-                break;
-            case 1: // char
-                repStr = std::get<char>(arg);
-                break;
-            case 2: // short
-                repStr = std::to_string(std::get<short>(arg));
-                break;
-            case 3: // int 
-                repStr = std::to_string(std::get<int>(arg));
-                break;
-            case 4: // long
-                repStr = std::to_string(std::get<long>(arg));
-                break;
-            case 5: // long long
-                repStr = std::to_string(std::get<long long>(arg));
-                break;
-            case 6: // float
-                repStr = std::to_string(std::get<float>(arg));
-                break;
-            case 7: // double
-                repStr = std::to_string(std::get<double>(arg));
-                break;
-            case 8: //std::string
-                repStr = std::get<std::string>(arg);
-                break;
-
-            default:
-                break;
-            }
-            
-            format.replace(pos, a, repStr);
-            pos += repStr.length() - a;
         }
     }
 
