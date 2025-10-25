@@ -57,40 +57,6 @@ std::string VarToString(const var& arg)
     default:
         break;
     }
-    // // std::cout << arg.index() << '\n';
-    // switch (arg.index())
-    // {
-    // case 0: // bool
-    //     ret = std::get<bool>(arg) ? "true" : "false";
-    //     break;
-    // case 1: // char
-    //     ret = std::get<char>(arg);
-    //     break;
-    // case 2: // short
-    //     ret = std::to_string(std::get<short>(arg));
-    //     break;
-    // case 3: // int 
-    //     ret = std::to_string(std::get<int>(arg));
-    //     break;
-    // case 4: // long
-    //     ret = std::to_string(std::get<long>(arg));
-    //     break;
-    // case 5: // long long
-    //     ret = std::to_string(std::get<long long>(arg));
-    //     break;
-    // case 6: // float
-    //     ret = std::to_string(std::get<float>(arg));
-    //     break;
-    // case 7: // double
-    //     ret = std::to_string(std::get<double>(arg));
-    //     break;
-    // case 8: //std::string
-    //     ret = std::get<std::string>(arg);
-    //     break;
-
-    // default:
-    //     break;
-    // }
 
     return ret;
 }
